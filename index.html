@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Stop: It's Giphy time</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <h1>Giphy-Time!</h1>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-8">
+                <div id="buttons-here"></div>
+            </div>
+            <div class="col-4">
+                <form>
+                    <div class="form-group">
+                        <label for="gifSearchField">Search gifs of your own!</label>
+                        <input type="search" class="form-control" id="gifSearchField" placeholder="Search Gifs">
+                        <button type="submit" class="btn btn-info" id="get-gifs">Get Gifs</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12" id="gifs-go-here"></div>
+        </div>
+    </div>
+
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+
+
+var buttons = ["planet mercury", "planet venus", "planet earth", "mars", "jupiter", "saturn", "uranus", "neptune", "new horizons", "moon", "europa moon", "nebulas", "galaxies", "space"];
+
+function generateButtons(){
+
+    for(i=0; i<buttons.length; i++){
+        var newButtons = $("<button>").text(buttons[i]);
+        newButtons.attr("class", "btn btn-info");
+        newButtons.attr("data-name", buttons[i]);
+        newButtons.attr("style", "margin:2px");
+
+        buttonsDiv = $("#buttons-here");
+
+        buttonsDiv.append(newButtons);
+    }
+}
+generateButtons();
+
+
+$("button").on("click", function(event){
+
+    event.preventDefault();
+
+    var spaceData = $(this).attr("data-name");
+
+    console.log(spaceData);
+
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + spaceData + "&api_key=BkaUZZWcFij6J7AoQj3WtPb1R2p9O6V9&limit=10"
+
+        $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+      .then(function(response) {
+        console.log(response);
+
+          var results = response.data;
+
+          for (var i = 0; i < results.length; i++) {
+
+            if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+              var gifsDiv = $("<div>");
+
+              var rating = results[i].rating;
+
+              var p = $("<p>").text("Rating: " + rating);
+
+              var spaceImage = $("<img>");
+
+              spaceImage.attr("src", results[i].images.fixed_height.url);
+
+              gifsDiv.append(p);
+              gifsDiv.append(spaceImage);
+
+              $("#gifs-go-here").prepend(gifsDiv);
+            }
+          }
+    });
+
+});
+
+$("#get-gifs").on("click", function(event){
+
+    event.preventDefault();
+
+    var gifSearch = $("#gifSearchField").val().trim();
+
+    buttons.push(gifSearch);
+
+    var addedButton = $("<button>").text(gifSearch);
+
+        addedButton.attr("class", "btn btn-info");
+        addedButton.attr("data-name", gifSearch);
+        addedButton.attr("style", "margin:2px");
+
+
+    $("#buttons-here").append(addedButton);
+    $("#gifSearchField").val("");
+
+    
+
+
+})
+
+
+
+
+
+
+</script>
+
+</body>
