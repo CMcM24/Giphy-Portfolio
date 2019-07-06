@@ -1,11 +1,21 @@
+//Most of the functionality here works. The page loads fine, and when you click the buttons that are generated at pageload they display gifs and their ratings from the GIPHY API. However, the pause functionality doesn't work, and any new buttons generated after pageload won't respond to the click event (they are given the class that the event is searching for). There is somethign wrong here, but I am not given any errors by VS Code or Chrome. I've moved things around, messed with the scope, but I haven't gotten these remaining bugs fixed.
 
+
+
+$(document).ready(function() {
 
 
 var buttons = ["planet mercury", "planet venus", "planet earth", "mars", "jupiter", "planet saturn", "uranus", "planet neptune", "new horizons", "moon", "europa moon", "nebulas", "galaxies", "space"];
 
+var queryURL;
+
+
+//This function loops through the array and creates the above buttons. I noticed that if I call this function at the end of the script, the buttons won't react to the click event set for them below. Same thing if I move the entire function to the bottom with the call.
+
 function generateButtons(){
 
     for(i=0; i<buttons.length; i++){
+
         var newButtons = $("<button>").text(buttons[i]);
         newButtons.attr("class", "btn btn-info");
         newButtons.attr("data-name", buttons[i]);
@@ -18,6 +28,7 @@ function generateButtons(){
 }
 generateButtons();
 
+//This click event creates new buttons from the users input into the input element. This works perfect everytime, but for some reason these buttons won't work when clicked, even though they are given the class that is being looked for in the next click event.
 
 $("#create-button").on("click", function(event){
 
@@ -44,13 +55,14 @@ $("#create-button").on("click", function(event){
     }
 })
 
+//This click event is for the buttons created, and pulls the gifs and rating from GIPHY. It works with buttons loaded at pageload, but as I stated above, it won't work for new buttons created even though they are given the class this click event is looking for. 
 
 $(".btn-info").on("click", function(){
 
     var spaceData = $(this).attr("data-name");
     console.log(spaceData);
 
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + spaceData + "&api_key=BkaUZZWcFij6J7AoQj3WtPb1R2p9O6V9&limit=10"
+    queryURL = "https://api.giphy.com/v1/gifs/search?q=" + spaceData + "&api_key=BkaUZZWcFij6J7AoQj3WtPb1R2p9O6V9&limit=10"
     
         $.ajax({
         url: queryURL,
@@ -83,6 +95,8 @@ $(".btn-info").on("click", function(){
     });
 });
 
+//This click event is for switching gifs between animted and still. Not sure why this doesn't work either. 
+
 $(".gif").on("click", function(){
     
     var state = $(this).attr("data-state");
@@ -100,4 +114,4 @@ $(".gif").on("click", function(){
 
 
 
-
+});
