@@ -57,48 +57,53 @@ $("#create-button").on("click", function(event){
 
 //This click event is for the buttons created, and pulls the gifs and rating from GIPHY. It works with buttons loaded at pageload, but as I stated above, it won't work for new buttons created even though they are given the class this click event is looking for. 
 
-$(".btn-info").on("click", function(){
+$(document).on("click", "button", function(event){
 
-    var spaceData = $(this).attr("data-name");
-    console.log(spaceData);
+    event.preventDefault();
 
-    queryURL = "https://api.giphy.com/v1/gifs/search?q=" + spaceData + "&api_key=BkaUZZWcFij6J7AoQj3WtPb1R2p9O6V9&limit=10"
+    if(event.target.className == "btn btn-info"){
+
+        var spaceData = event.target.innerText;
     
-        $.ajax({
-        url: queryURL,
-        method: "GET"
-      })
-      .then(function(response) {
-        console.log(response);
-
-          var results = response.data;
-
-          for (var i = 0; i < results.length; i++) {
-
-            if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
-
-              var gifsDiv = $("<div>");
-              var rating = results[i].rating;
-              var p = $("<p>").text("Rating: " + rating);
-              var spaceImage = $("<img>");
-
-              spaceImage.attr("src", results[i].images.fixed_height.url);
-              spaceImage.attr("still-url", results[i].images.fixed_height_still.url);
-              spaceImage.attr("animated-url", results[i].images.fixed_height.url);
-              spaceImage.attr("class", "gif");
-              spaceImage.attr("data-state", "animated");
-              gifsDiv.append(p);
-              gifsDiv.append(spaceImage);
-              $("#gifs-go-here").prepend(gifsDiv);
-            }
-          }
-    });
-});
-
-//This click event is for switching gifs between animted and still. Not sure why this doesn't work either. 
-
-$(".gif").on("click", function(){
+        queryURL = "https://api.giphy.com/v1/gifs/search?q=" + spaceData + "&api_key=BkaUZZWcFij6J7AoQj3WtPb1R2p9O6V9&limit=10"
+        
+            $.ajax({
+            url: queryURL,
+            method: "GET"
+          })
+          .then(function(response) {
     
+              var results = response.data;
+    
+              for (var i = 0; i < results.length; i++) {
+    
+                if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+    
+                  var gifsDiv = $("<div>");
+                  var rating = results[i].rating;
+                  var p = $("<p>").text("Rating: " + rating);
+                  var spaceImage = $("<img>");
+    
+                  spaceImage.attr("src", results[i].images.fixed_height.url);
+                  spaceImage.attr("still-url", results[i].images.fixed_height_still.url);
+                  spaceImage.attr("animated-url", results[i].images.fixed_height.url);
+                  spaceImage.attr("class", "gif");
+                  spaceImage.attr("data-state", "animated");
+                  gifsDiv.append(p);
+                  gifsDiv.append(spaceImage);
+                  $("#gifs-go-here").prepend(gifsDiv);
+                }
+              }
+        });
+    }
+    else if (event.target.className == "gif"){
+        console.log("this: " + this)
+    }
+})
+
+$(document).on("click", "img", function(event){
+        event.preventDefault()
+    console.log( "this: " + this)
     var state = $(this).attr("data-state");
 
     if(state == "animated"){
@@ -109,7 +114,29 @@ $(".gif").on("click", function(){
         $(this).attr("src", $(this).attr("animated-url"));
         $(this).attr("data-state", "animated");
     }
-});
+})
+
+// $(".btn-info").on("click", function(){
+
+   
+// });
+
+//This click event is for switching gifs between animted and still. Not sure why this doesn't work either. 
+
+// $(".gif").on("click", function(event){
+//     event.preventDefault()
+//     console.log( "this: " + this)
+//     var state = $(this).attr("data-state");
+
+//     if(state == "animated"){
+//         $(this).attr("src", $(this).attr("still-url"));
+//         $(this).attr("data-state", "still");
+//     }
+//     else{
+//         $(this).attr("src", $(this).attr("animated-url"));
+//         $(this).attr("data-state", "animated");
+//     }
+// });
 
 
 
