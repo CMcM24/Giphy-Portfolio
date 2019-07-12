@@ -130,3 +130,5 @@ $(document).on("click", "img", function(event){
 
 
 });
+
+console.log("hi")
